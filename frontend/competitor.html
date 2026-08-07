@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detailed Competitor Analysis — Multi-Agent System</title>
+  
+  <!-- Inter Font from Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="./css/variables.css">
+  <link rel="stylesheet" href="./css/main.css">
+  <link rel="stylesheet" href="./css/sidebar.css">
+  <link rel="stylesheet" href="./css/header.css">
+  <link rel="stylesheet" href="./css/cards.css">
+  <link rel="stylesheet" href="./css/charts.css">
+  <link rel="stylesheet" href="./css/table.css">
+  <link rel="stylesheet" href="./css/responsive.css">
+  
+  <!-- Apache ECharts library -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+  
+  <style>
+    .competitor-detail-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: var(--space-4);
+      margin-bottom: var(--space-4);
+    }
+    .col-12 { grid-column: span 12; }
+    .col-6 { grid-column: span 6; }
+    .col-4 { grid-column: span 4; }
+    
+    .comp-strengths-box {
+      background: rgba(56, 161, 105, 0.1);
+      border-left: 4px solid var(--accent-green);
+      padding: var(--space-3);
+      border-radius: var(--radius-sm);
+      margin-bottom: var(--space-3);
+    }
+    .comp-weaknesses-box {
+      background: rgba(229, 62, 62, 0.1);
+      border-left: 4px solid var(--accent-red);
+      padding: var(--space-3);
+      border-radius: var(--radius-sm);
+      margin-bottom: var(--space-3);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Sidebar navigation -->
+    <aside id="sidebar-container" class="sidebar"></aside>
+    
+    <!-- Main content viewport -->
+    <main class="main-content">
+      <div style="display: flex; flex-direction: column; flex: 1; overflow: hidden; height: 100%;">
+        
+        <!-- Header Dynamic Binder -->
+        <header id="header-container" class="header"></header>
+        
+        <!-- Scrollable content -->
+        <div class="dashboard-scroll" style="padding: var(--space-4);">
+          
+          <div class="competitor-detail-grid">
+            
+            <!-- Overview Card -->
+            <div class="card col-12 animate-fade-in stagger-1">
+              <div class="card-title">Competitive Overview</div>
+              <p class="body-text" id="competitor-overview-text">Loading competitor landscape narrative...</p>
+            </div>
+            
+            <!-- Comparison Table Card -->
+            <div class="card col-12 animate-fade-in stagger-2">
+              <div class="card-title">Detailed Financial Comparison Table</div>
+              <div class="competitor-table-container">
+                <table class="competitor-table" id="detailed-comp-table">
+                  <thead>
+                    <tr>
+                      <th>Company</th>
+                      <th>Ticker</th>
+                      <th>Exchange</th>
+                      <th>Revenue (Target Scale)</th>
+                      <th>Market Cap</th>
+                      <th>Net Profit</th>
+                      <th>ROE</th>
+                      <th>P/E (x)</th>
+                      <th>D/E</th>
+                      <th>EBITDA Margin</th>
+                      <th>Rec</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            
+            <!-- Market Share EChart -->
+            <div class="card col-6 animate-fade-in stagger-3">
+              <div class="chart-container-wrapper">
+                <div class="card-title">Market Share (by Revenue)</div>
+                <div class="chart-container" id="market-share-chart" style="height: 250px;"></div>
+              </div>
+            </div>
+
+            <!-- Rankings Card -->
+            <div class="card col-6 animate-fade-in stagger-4">
+              <div class="card-title">Scoring and Ranking Analysis</div>
+              <div class="competitor-table-container">
+                <table class="competitor-table" id="ranking-table">
+                  <thead>
+                    <tr>
+                      <th>Rank</th>
+                      <th>Company</th>
+                      <th>Ticker</th>
+                      <th>Combined Score</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Growth & Profitability Charts -->
+            <div class="card col-6 animate-fade-in stagger-5">
+              <div class="chart-container-wrapper">
+                <div class="card-title">Profitability Comparison (ROE vs EBITDA Margin)</div>
+                <div class="chart-container" id="profitability-compare-chart" style="height: 250px;"></div>
+              </div>
+            </div>
+
+            <div class="card col-6 animate-fade-in stagger-6">
+              <div class="chart-container-wrapper">
+                <div class="card-title">Market Cap Valuations (P/E ratio comparisons)</div>
+                <div class="chart-container" id="valuations-compare-chart" style="height: 250px;"></div>
+            </div>
+            
+            <!-- Radar comparison chart -->
+            <div class="card col-12 animate-fade-in stagger-7">
+              <div class="chart-container-wrapper">
+                <div class="card-title">Multi-Dimensional Index Performance (Radar Comparison)</div>
+                <div class="chart-container" id="radar-compare-chart" style="height: 320px;"></div>
+              </div>
+            </div>
+
+            <!-- Strengths and Weaknesses Quadrant -->
+            <div class="card col-12 animate-fade-in stagger-8">
+              <div class="card-title">Strategic Position Assessment</div>
+              <div class="competitor-detail-grid">
+                <div class="col-6">
+                  <div class="card-title" style="color: var(--accent-green); font-size: 11px;">Target Strengths vs Peers</div>
+                  <div id="target-strengths-list"></div>
+                </div>
+                <div class="col-6">
+                  <div class="card-title" style="color: var(--accent-red); font-size: 11px;">Target Weaknesses vs Peers</div>
+                  <div id="target-weaknesses-list"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Winner & Recommendation Card -->
+            <div class="card col-12 animate-fade-in stagger-9" style="background: linear-gradient(135deg, var(--bg-card-alt) 0%, var(--bg-hover) 100%);">
+              <div class="card-title">Winner & Investment Recommendation</div>
+              <p class="body-text" id="winner-narrative-text" style="font-weight: 500; font-size: 14px; margin-bottom: var(--space-2);"></p>
+              <p class="body-text">Based on our multi-agent metrics aggregation (ROE, margins, leverage ratios), we have evaluated the competitive performance indices. The analysis suggests structural advantages and highlights risks in capital allocation strategies.</p>
+            </div>
+
+          </div>
+          
+        </div>
+      </div>
+    </main>
+    
+  </div>
+
+  <script type="module" src="./js/competitor.js"></script>
+</body>
+</html>

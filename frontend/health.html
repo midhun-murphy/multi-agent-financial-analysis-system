@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Investor Financial Health | Enterprise Analyst</title>
+  
+  <!-- Inter Font from Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="./css/variables.css">
+  <link rel="stylesheet" href="./css/main.css">
+  <link rel="stylesheet" href="./css/sidebar.css">
+  <link rel="stylesheet" href="./css/header.css">
+  <link rel="stylesheet" href="./css/cards.css">
+  <link rel="stylesheet" href="./css/table.css">
+  <link rel="stylesheet" href="./css/responsive.css">
+  
+  <style>
+    /* 15-20 Seconds Scan Bloomberg Theme overrides */
+    .dashboard-scroll {
+      padding: 32px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 28px !important;
+      height: auto !important;
+      max-height: none !important;
+      overflow-y: auto !important;
+    }
+    
+    .health-section-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    
+    .opinion-card-highlight {
+      border: 2px solid var(--accent-blue) !important;
+      box-shadow: 0 8px 32px rgba(59, 130, 246, 0.15) !important;
+    }
+    
+    .section-header {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 12px;
+    }
+    
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0;
+    }
+    
+    .section-subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin: 0;
+    }
+    
+    .section-content {
+      margin-top: 4px;
+    }
+
+    /* Score cards grid */
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+    @media (max-width: 992px) {
+      .pillars-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 576px) {
+      .pillars-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .pillar-score-card {
+      background: var(--bg-card-alt);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 24px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+    }
+    
+    .pillar-score-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+    }
+    
+    .pillar-score-value {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 4px 0;
+    }
+
+    /* Columns grids */
+    .grid-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 768px) {
+      .grid-2col {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .bullet-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      line-height: 1.7;
+      font-size: 13.5px;
+      margin-bottom: var(--space-2);
+    }
+    .bullet-item svg {
+      flex-shrink: 0;
+      width: 14px;
+      height: 14px;
+      margin-top: 4px;
+    }
+
+    /* Tables custom style */
+    .competitor-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    .competitor-table th {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-medium);
+      position: sticky;
+      top: 0;
+      background: var(--bg-card);
+      z-index: 1;
+    }
+    .competitor-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border-subtle);
+      font-size: 13px;
+      vertical-align: middle;
+    }
+    .competitor-table tbody tr:nth-child(even) {
+      background: rgba(255, 255, 255, 0.015);
+    }
+    
+    /* Checklist */
+    .checklist-columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px 24px;
+    }
+    @media (max-width: 576px) {
+      .checklist-columns {
+        grid-template-columns: 1fr;
+      }
+    }
+    .checklist-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13.5px;
+      color: var(--text-secondary);
+    }
+    .checklist-item svg {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+    }
+    .checklist-pass svg {
+      color: var(--accent-green);
+    }
+    .checklist-fail svg {
+      color: var(--text-muted);
+    }
+
+    /* Watchlist alert boxes */
+    .watchlist-alert-card {
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .watchlist-alert-icon {
+      font-size: 16px;
+      line-height: 1;
+    }
+    .watchlist-alert-body {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .watchlist-alert-title {
+      font-weight: 600;
+      font-size: 13.5px;
+    }
+    .watchlist-alert-desc {
+      color: var(--text-secondary);
+      font-size: 12.5px;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Sidebar navigation placeholder -->
+    <aside id="sidebar-container" class="sidebar"></aside>
+    
+    <!-- Main content detailed viewport -->
+    <main class="main-content">
+      <div style="display: flex; flex-direction: column; flex: 1; overflow: hidden; height: 100%;">
+        
+        <!-- Header Dynamic Binder -->
+        <header id="header-container" class="header"></header>
+        
+        <!-- Scrollable explorer viewport -->
+        <div class="dashboard-scroll">
+          
+          <!-- 1. Financial Health Score Overview Header -->
+          <div class="health-section-card">
+            <div class="section-header">
+              <h2 class="section-title">Financial Health Score</h2>
+              <p class="section-subtitle">Overall score of investor safety and returns metrics</p>
+            </div>
+            <div class="section-content">
+              <div class="health-quality-panel" style="margin-bottom: 0;">
+                <!-- Overall Score -->
+                <div class="quality-card quality-card-large">
+                  <div class="field-label" style="font-size: 12px;">Overall Health Score</div>
+                  <div class="flex items-center gap-3">
+                    <span class="quality-val" id="health-overall-score" style="font-size: 36px; font-weight: 700; color: var(--text-primary);">--</span>
+                    <span class="badge badge-blue" id="health-confidence" style="font-size: 12px; padding: 4px 8px;">95% Confidence</span>
+                  </div>
+                </div>
+                <!-- Status Badge -->
+                <div class="quality-card">
+                  <div class="field-label" style="font-size: 12px;">Status Classification</div>
+                  <span id="health-overall-status" style="font-size: 18px; font-weight: 700; margin-top: 4px; display: inline-block;">--</span>
+                </div>
+                <!-- Data Sources -->
+                <div class="quality-card">
+                  <div class="field-label" style="font-size: 12px;">Data Sources</div>
+                  <div style="display: flex; gap: var(--space-1.5); margin-top: var(--space-2);">
+                    <span class="badge badge-blue">PDF</span>
+                    <span class="badge badge-blue">Calculated</span>
+                    <span class="badge badge-blue">API</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Executive Health Summary Card -->
+          <div class="health-section-card">
+            <div class="section-header">
+              <h2 class="section-title">Executive Health Summary</h2>
+              <p class="section-subtitle">AI-assisted analysis of the company's financial balance sheets</p>
+            </div>
+            <div class="section-content">
+              <div class="body-text" id="health-summary-paragraphs" style="line-height: 1.6; color: var(--text-secondary); font-size: 14px;">
+                Loading health statistics...
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Health Pillars Grid -->
+          <div class="health-section-card">
+            <div class="section-header">
+              <h2 class="section-title">Health Pillars</h2>
+              <p class="section-subtitle">Key corporate analysis categories computed dynamically from ratio calculations</p>
+            </div>
+            <div class="section-content">
+              <div class="pillars-grid">
+                <div class="pillar-score-card">
+                  <span class="pillar-score-label">Profitability</span>
+                  <span class="pillar-score-value" id="pillar-score-profitability">--</span>
+                  <span class="badge badge-hold" id="pillar-badge-profitability">N/A</span>
+                </div>
+                <div class="pillar-score-card">
+                  <span class="pillar-score-label">Liquidity</span>
+                  <span class="pillar-score-value" id="pillar-score-liquidity">--</span>
+                  <span class="badge badge-hold" id="pillar-badge-liquidity">N/A</span>
+                </div>
+                <div class="pillar-score-card">
+                  <span class="pillar-score-label">Efficiency</span>
+                  <span class="pillar-score-value" id="pillar-score-efficiency">--</span>
+                  <span class="badge badge-hold" id="pillar-badge-efficiency">N/A</span>
+                </div>
+                <div class="pillar-score-card">
+                  <span class="pillar-score-label">Solvency</span>
+                  <span class="pillar-score-value" id="pillar-score-solvency">--</span>
+                  <span class="badge badge-hold" id="pillar-badge-solvency">N/A</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Strengths & Weaknesses Grid -->
+          <div class="grid-2col">
+            <div class="health-section-card">
+              <div class="section-header">
+                <h2 class="section-title" style="color: var(--accent-green); display: flex; align-items: center; gap: 8px;">
+                  <svg class="lucide lucide-check" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;"><polyline points="20 6 9 17 4 12"/></svg>
+                  Key Strengths
+                </h2>
+                <p class="section-subtitle">Positive return metrics and strong margins</p>
+              </div>
+              <div class="section-content">
+                <div class="list-container" id="health-strengths-container">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
+            </div>
+            <div class="health-section-card">
+              <div class="section-header">
+                <h2 class="section-title" style="color: var(--accent-red); display: flex; align-items: center; gap: 8px;">
+                  <svg class="lucide lucide-alert-triangle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
+                  Areas to Monitor
+                </h2>
+                <p class="section-subtitle">Identified vulnerabilities and leverage warnings</p>
+              </div>
+              <div class="section-content">
+                <div class="list-container" id="health-weaknesses-container">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. Stability Matrix Card -->
+          <div class="health-section-card">
+            <div class="section-header">
+              <h2 class="section-title">Financial Stability Matrix</h2>
+              <p class="section-subtitle">Breakdown of operational, debt, and cash flow consistency parameters</p>
+            </div>
+            <div class="section-content">
+              <div class="competitor-table-container" style="margin-top: 0;">
+                <table class="competitor-table" id="stability-table-el">
+                  <thead>
+                    <tr>
+                      <th style="text-align: left;">Metric</th>
+                      <th style="text-align: center; width: 120px;">Status</th>
+                      <th style="text-align: left;">Reason</th>
+                    </tr>
+                  </thead>
+                  <tbody id="stability-tbody">
+                    <!-- Dynamic rows -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- 6. Area Trend Card -->
+          <div class="health-section-card">
+            <div class="section-header">
+              <h2 class="section-title">Area Trend Summary</h2>
+              <p class="section-subtitle">Year-over-year vector direction indicators across core operational pillars</p>
+            </div>
+            <div class="section-content">
+              <div class="competitor-table-container" style="margin-top: 0;">
+                <table class="competitor-table" id="trend-table-el">
+                  <thead>
+                    <tr>
+                      <th style="text-align: left;">Area</th>
+                      <th style="text-align: center; width: 150px;">Trend</th>
+                    </tr>
+                  </thead>
+                  <tbody id="trend-tbody">
+                    <!-- Dynamic rows -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- 7. Health Checklist Card -->
+          <div class="health-section-card">
+            <div class="section-header">
+              <h2 class="section-title">Health Checklist</h2>
+              <p class="section-subtitle">Essential corporate checkpoints and accounting parameters</p>
+            </div>
+            <div class="section-content">
+              <div class="checklist-columns" id="checklist-grid-container">
+                <!-- Dynamic checklist items -->
+              </div>
+            </div>
+          </div>
+
+          <!-- 8. Investor Watchlist Card -->
+          <div class="health-section-card">
+            <div class="section-header">
+              <h2 class="section-title">Investor Watchlist</h2>
+              <p class="section-subtitle">Key highlights and trigger areas requiring ongoing investor surveillance</p>
+            </div>
+            <div class="section-content">
+              <div style="display: flex; flex-direction: column; gap: 16px;" id="watchlist-container">
+                <!-- Dynamic watchlist items -->
+              </div>
+            </div>
+          </div>
+
+          <!-- 9. AI Opinion Card & Investor Action Banner -->
+          <div class="health-section-card opinion-card-highlight">
+            <div class="section-header" style="border-bottom-color: rgba(59, 130, 246, 0.25);">
+              <h2 class="section-title">AI Investment Health Opinion</h2>
+              <p class="section-subtitle">Weighted verdict based on calculated corporate financial records</p>
+            </div>
+            <div class="section-content">
+              <p class="body-text" id="ai-opinion-text" style="color: var(--text-secondary); line-height: 1.6; font-size: 14px; margin-bottom: 24px;"></p>
+              
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <span class="field-label" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 600;">Investor Action Recommendation</span>
+                <div class="action-card" id="action-recommendation-box" style="display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; border-radius: var(--radius-sm); border: 1px solid var(--border-medium); background: rgba(0, 229, 255, 0.02); font-size: 14px; font-weight: 600; margin-top: 4px;">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </main>
+    
+  </div>
+
+  <script type="module" src="./js/health.js"></script>
+</body>
+</html>

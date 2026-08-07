@@ -1,0 +1,94 @@
+/* =============================================================================
+   charts.css — charts layouts & progress bars styling
+   ============================================================================= */
+
+/* --- Chart Containers --- */
+.chart-container-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.chart-container {
+  width: 100%;
+  height: 220px;
+  min-height: 220px;
+  position: relative;
+}
+
+/* --- Risk Analysis Panel Progress Bars --- */
+.risk-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  justify-content: space-between;
+}
+
+.risk-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.risk-item-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.risk-item-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--font-size-sm);
+}
+
+.risk-item-label {
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
+}
+
+.risk-item-score {
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-mono);
+}
+
+.risk-bar-track {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+
+.risk-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  width: 0%; /* Animated via JS */
+  transition: width var(--transition-slow) cubic-bezier(0.1, 0.8, 0.25, 1);
+}
+
+/* --- Risk Colors --- */
+.risk-bg-low      { background: var(--risk-low); }
+.risk-bg-moderate { background: var(--risk-moderate); }
+.risk-bg-high     { background: var(--risk-high); }
+.risk-bg-critical { background: var(--risk-critical); }
+
+.risk-footer-note {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed var(--border-subtle);
+  border-radius: 6px;
+  padding: var(--space-2) var(--space-3);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.risk-footer-note svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  color: var(--accent-orange);
+}

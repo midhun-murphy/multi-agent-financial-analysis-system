@@ -1,0 +1,7 @@
+{
+  "AAPL": ["MSFT", "GOOGL", "DELL", "HPQ"],
+  "WIT": ["INFY.NS", "TCS.NS", "HCLTECH.NS", "TECHM.NS"],
+  "WIPRO": ["INFY.NS", "TCS.NS", "HCLTECH.NS", "TECHM.NS"],
+  "WIPRO.NS": ["INFY.NS", "TCS.NS", "HCLTECH.NS", "TECHM.NS"],
+  "TSLA": ["BYDDY", "F", "GM", "RIVN"]
+}

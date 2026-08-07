@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log In - Multi-Agent Financial Analysis System</title>
+  
+  <!-- Inter Font from Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="./css/variables.css">
+  <link rel="stylesheet" href="./css/main.css">
+  <link rel="stylesheet" href="./css/header.css">
+  <link rel="stylesheet" href="./css/cards.css">
+  <link rel="stylesheet" href="./css/upload.css">
+  <link rel="stylesheet" href="./css/animations.css">
+  
+  <style>
+    .auth-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      width: 100vw;
+      background: var(--bg-base);
+      padding: var(--space-4);
+    }
+    
+    .auth-container {
+      max-width: 420px;
+      width: 100%;
+    }
+    
+    .auth-header {
+      text-align: center;
+      margin-bottom: var(--space-6);
+    }
+    
+    .auth-header h1 {
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-bold);
+      color: var(--text-primary);
+      margin-bottom: var(--space-2);
+    }
+    
+    .auth-header p {
+      font-size: var(--font-size-sm);
+      color: var(--text-muted);
+    }
+    
+    .alert {
+      padding: var(--space-3);
+      border-radius: 6px;
+      font-size: var(--font-size-sm);
+      margin-bottom: var(--space-4);
+      display: none;
+    }
+    
+    .alert-error {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: var(--accent-red);
+    }
+    
+    .alert-success {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--accent-green);
+    }
+    
+    .alert-warning {
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: var(--accent-yellow);
+    }
+    
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: var(--space-2);
+      margin-bottom: var(--space-4);
+      font-size: var(--font-size-sm);
+    }
+    
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      user-select: none;
+    }
+    
+    .checkbox-container input {
+      cursor: pointer;
+    }
+    
+    .forgot-link {
+      color: var(--accent-blue);
+      text-decoration: none;
+    }
+    
+    .forgot-link:hover {
+      text-decoration: underline;
+    }
+    
+    .auth-footer {
+      text-align: center;
+      margin-top: var(--space-4);
+      font-size: var(--font-size-sm);
+      color: var(--text-muted);
+    }
+    
+    .auth-footer a {
+      color: var(--accent-blue);
+      text-decoration: none;
+    }
+    
+    .auth-footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-wrapper">
+    <div class="auth-container card animate-fade-in">
+      <div class="auth-header">
+        <h1>Welcome Back</h1>
+        <p>Log in to access your financial assessments</p>
+      </div>
+      
+      <div id="alert-box" class="alert"></div>
+      
+      <form id="login-form">
+        <div class="form-group">
+          <label class="field-label" for="login-email">Email Address</label>
+          <input type="email" class="form-input" id="login-email" placeholder="john@example.com" required autocomplete="email" />
+        </div>
+        
+        <div class="form-group" style="margin-bottom: var(--space-2);">
+          <label class="field-label" for="login-password">Password</label>
+          <input type="password" class="form-input" id="login-password" placeholder="Enter your password" required autocomplete="current-password" />
+        </div>
+        
+        <div class="form-options">
+          <label class="checkbox-container">
+            <input type="checkbox" id="remember-me" />
+            <span>Remember Me</span>
+          </label>
+          <a href="#" class="forgot-link" id="forgot-btn">Forgot Password?</a>
+        </div>
+        
+        <button type="submit" class="btn btn-filled w-full" style="height: 40px;" id="btn-submit">
+          Log In
+        </button>
+      </form>
+      
+      <div class="auth-footer">
+        Don't have an account? <a href="signup.html">Sign Up</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Handle session expired checks
+    window.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('expired') === 'true') {
+        showWarning('Session expired. Please login again.');
+      }
+      
+      // Load saved email if Remember Me was previously checked
+      const savedEmail = localStorage.getItem('remembered_email');
+      if (savedEmail) {
+        document.getElementById('login-email').value = savedEmail;
+        document.getElementById('remember-me').checked = true;
+      }
+      
+      // Placeholder warning for Forgot Password
+      document.getElementById('forgot-btn').addEventListener('click', (e) => {
+        e.preventDefault();
+        showWarning('Password recovery is currently disabled.');
+      });
+    });
+
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      const rememberMe = document.getElementById('remember-me').checked;
+      
+      const alertBox = document.getElementById('alert-box');
+      const submitBtn = document.getElementById('btn-submit');
+      
+      alertBox.style.display = 'none';
+      alertBox.className = 'alert';
+      
+      try {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Logging In...';
+        
+        const apiBase = window.location.port === '8080' ? 'http://localhost:8000/api' : '/api';
+        const response = await fetch(`${apiBase}/auth/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, password })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          // Store token
+          if (rememberMe) {
+            localStorage.setItem('remembered_email', email);
+            localStorage.setItem('jwt_token', data.access_token);
+          } else {
+            localStorage.removeItem('remembered_email');
+            sessionStorage.setItem('jwt_token', data.access_token);
+          }
+          
+          showSuccess('Login successful! Redirecting...');
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 1000);
+        } else {
+          const errorMsg = data.detail || 'Invalid email or password.';
+          showError(errorMsg);
+        }
+      } catch (err) {
+        showError('Unable to connect to the server. Please try again later.');
+        console.error(err);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Log In';
+      }
+    });
+    
+    function showError(msg) {
+      const alertBox = document.getElementById('alert-box');
+      alertBox.textContent = msg;
+      alertBox.className = 'alert alert-error';
+      alertBox.style.display = 'block';
+    }
+    
+    function showSuccess(msg) {
+      const alertBox = document.getElementById('alert-box');
+      alertBox.textContent = msg;
+      alertBox.className = 'alert alert-success';
+      alertBox.style.display = 'block';
+    }
+    
+    function showWarning(msg) {
+      const alertBox = document.getElementById('alert-box');
+      alertBox.textContent = msg;
+      alertBox.className = 'alert alert-warning';
+      alertBox.style.display = 'block';
+    }
+  </script>
+</body>
+</html>

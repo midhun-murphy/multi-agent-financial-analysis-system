@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Investment Recommendation — Multi-Agent System</title>
+  
+  <!-- Inter Font from Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="./css/variables.css">
+  <link rel="stylesheet" href="./css/main.css">
+  <link rel="stylesheet" href="./css/sidebar.css">
+  <link rel="stylesheet" href="./css/header.css">
+  <link rel="stylesheet" href="./css/cards.css">
+  <link rel="stylesheet" href="./css/table.css">
+  <link rel="stylesheet" href="./css/responsive.css">
+  
+  <style>
+    .rec-layout-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+    .col-12 { grid-column: span 12; }
+    .col-8 { grid-column: span 8; }
+    .col-6 { grid-column: span 6; }
+    .col-4 { grid-column: span 4; }
+    
+    @media (max-width: 992px) {
+      .col-8, .col-6, .col-4 { grid-column: span 12; }
+    }
+
+    .reason-item {
+      background: rgba(56, 161, 105, 0.05);
+      border-left: 4px solid var(--accent-green);
+      padding: var(--space-3);
+      border-radius: var(--radius-sm);
+      margin-bottom: var(--space-2.5);
+    }
+
+    .risk-item {
+      background: rgba(229, 62, 62, 0.05);
+      border-left: 4px solid var(--accent-red);
+      padding: var(--space-3);
+      border-radius: var(--radius-sm);
+      margin-bottom: var(--space-2.5);
+    }
+    
+    .evidence-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-4);
+    }
+    @media (max-width: 768px) {
+      .evidence-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .evidence-card {
+      background: var(--bg-card-alt);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+    .evidence-card:hover {
+      border-color: var(--accent-blue);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Sidebar navigation -->
+    <aside id="sidebar-container" class="sidebar"></aside>
+    
+    <!-- Main content viewport -->
+    <main class="main-content">
+      <div style="display: flex; flex-direction: column; flex: 1; overflow: hidden; height: 100%;">
+        
+        <!-- Header -->
+        <header id="header-container" class="header"></header>
+        
+        <!-- Scrollable content -->
+        <div class="dashboard-scroll" style="padding: 32px;">
+          
+          <div class="rec-layout-grid">
+            
+            <!-- Section 1: Large Decision Card -->
+            <div class="card col-8" style="padding: 32px; display: flex; flex-direction: column; justify-content: space-between; min-height: 280px; background: linear-gradient(135deg, var(--bg-card-alt) 0%, var(--bg-hover) 100%);">
+              <div>
+                <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--text-muted); letter-spacing: 1px;">AGGREGATED INVESTMENT RECOMMENDATION</span>
+                <div style="display: flex; align-items: baseline; gap: 16px; margin-top: 12px; margin-bottom: 20px;">
+                  <span id="rec-decision-badge" class="badge" style="font-size: 32px; font-weight: 800; padding: 6px 20px; border-radius: var(--radius-sm);">HOLD</span>
+                  <span style="font-size: 14px; color: var(--text-muted);">Weighted Multi-Agent Index Verdict</span>
+                </div>
+              </div>
+              
+              <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+                <div>
+                  <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">Overall Score</div>
+                  <div id="rec-overall-score" style="font-size: 24px; font-weight: 700; color: var(--text-primary);">--/100</div>
+                </div>
+                <div>
+                  <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">Confidence</div>
+                  <div id="rec-confidence" style="font-size: 24px; font-weight: 700; color: var(--accent-green);">--%</div>
+                </div>
+                <div>
+                  <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">Risk Profile</div>
+                  <div id="rec-risk" style="font-size: 24px; font-weight: 700; color: var(--text-primary);">--</div>
+                </div>
+                <div>
+                  <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">Horizon</div>
+                  <div id="rec-horizon" style="font-size: 15px; font-weight: 600; color: var(--text-primary); margin-top: 8px;">Long-Term</div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Section 2: Investment Score Breakdown -->
+            <div class="card col-4" style="padding: 24px; display: flex; flex-direction: column; justify-content: space-between;">
+              <div class="card-title" style="margin-bottom: 12px;">Investment Score Breakdown</div>
+              <div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px;" id="score-breakdown-container">
+                <!-- Populated dynamically -->
+              </div>
+              <div style="display: flex; justify-content: space-between; border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: 12px; font-weight: 700; font-size: 14px;">
+                <span>Total Aggregated Score</span>
+                <span id="breakdown-total">--/100</span>
+              </div>
+            </div>
+
+            <!-- Section 3: Top Reasons to Invest -->
+            <div class="card col-6" style="padding: 24px;">
+              <div class="card-title">Top Reasons to Invest</div>
+              <div id="reasons-invest-container">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+
+            <!-- Section 4: Key Risks Before Investing -->
+            <div class="card col-6" style="padding: 24px;">
+              <div class="card-title">Key Risks Before Investing</div>
+              <div id="risks-invest-container">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+
+            <!-- Section 5 & 6 & 7 & 8: Suitability, Valuation & Outlooks -->
+            <div class="card col-6" style="padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+              <div class="card-title" style="margin-bottom: 0;">Investor Suitability</div>
+              <div>
+                <span style="font-size: 11px; font-weight: 700; color: var(--accent-green); text-transform: uppercase; display: block; margin-bottom: 8px;">Suitable For</span>
+                <div id="suitable-badges" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                  <!-- Badges dynamically added -->
+                </div>
+              </div>
+              <div style="border-top: 1px dashed var(--border-color); padding-top: 16px;">
+                <span style="font-size: 11px; font-weight: 700; color: var(--accent-red); text-transform: uppercase; display: block; margin-bottom: 8px;">Not Recommended For</span>
+                <div id="not-suitable-badges" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                  <!-- Badges dynamically added -->
+                </div>
+              </div>
+            </div>
+
+            <div class="card col-6" style="padding: 24px; display: flex; flex-direction: column; gap: var(--space-4);">
+              <div class="card-title" style="margin-bottom: 0;">Valuation & Outlook Profile</div>
+              
+              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+                <span style="font-size: 13px; color: var(--text-muted);">Valuation Opinion:</span>
+                <span id="valuation-opinion-badge" class="badge badge-neutral" style="font-size: 12px; font-weight: 700;">FAIRLY VALUED</span>
+              </div>
+              
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div>
+                  <span style="font-size: 11px; font-weight: 700; color: var(--accent-blue); text-transform: uppercase; display: block; margin-bottom: 4px;">Short-Term Outlook (3-12M)</span>
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span id="short-term-badge" class="badge badge-neutral" style="font-size: 10px; font-weight: 600;">NEUTRAL</span>
+                    <span id="short-term-desc" style="font-size: 11.5px; color: var(--text-secondary);">Market volatility</span>
+                  </div>
+                </div>
+                <div>
+                  <span style="font-size: 11px; font-weight: 700; color: var(--accent-green); text-transform: uppercase; display: block; margin-bottom: 4px;">Long-Term Outlook (3-5Y)</span>
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span id="long-term-badge" class="badge badge-positive" style="font-size: 10px; font-weight: 600;">POSITIVE</span>
+                    <span id="long-term-desc" style="font-size: 11.5px; color: var(--text-secondary);">Revenue momentum</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 9: AI Investment Verdict -->
+            <div class="card col-12" style="padding: 28px; background: rgba(59, 130, 246, 0.03); border: 1px solid rgba(59, 130, 246, 0.15);">
+              <div class="card-title" style="color: var(--accent-blue); display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                <svg class="lucide lucide-cpu" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3"/><path d="M15 1v3"/><path d="M9 20v3"/><path d="M15 20v3"/><path d="M20 9h3"/><path d="M20 15h3"/><path d="M1 9h3"/><path d="M1 15h3"/></svg>
+                AI Investment Verdict
+              </div>
+              <p id="ai-verdict-text" class="body-text" style="font-size: 13.5px; line-height: 1.6; color: var(--text-primary); margin: 0;"></p>
+            </div>
+
+            <!-- Section 10: Evidence Panel -->
+            <div class="card col-12" style="padding: 24px;">
+              <div class="card-title">Evidence Panel — Trace to Source Agents</div>
+              <div class="evidence-grid" id="evidence-panel-container">
+                <!-- Dynamically populated links -->
+              </div>
+            </div>
+
+          </div>
+          
+        </div>
+      </div>
+    </main>
+    
+  </div>
+
+  <script type="module" src="./js/recommendation.js"></script>
+</body>
+</html>

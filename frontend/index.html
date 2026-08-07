@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multi-Agent Financial Statement Analysis System</title>
+  
+  <!-- Inter Font from Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheets (Separated by concerns) -->
+  <link rel="stylesheet" href="./css/variables.css">
+  <link rel="stylesheet" href="./css/main.css">
+  <link rel="stylesheet" href="./css/sidebar.css">
+  <link rel="stylesheet" href="./css/header.css">
+  <link rel="stylesheet" href="./css/cards.css">
+  <link rel="stylesheet" href="./css/charts.css">
+  <link rel="stylesheet" href="./css/swot.css">
+  <link rel="stylesheet" href="./css/chat.css">
+  <link rel="stylesheet" href="./css/table.css">
+  <link rel="stylesheet" href="./css/upload.css">
+  <link rel="stylesheet" href="./css/processing.css">
+  <link rel="stylesheet" href="./css/animations.css">
+  <link rel="stylesheet" href="./css/responsive.css">
+  
+  <!-- Apache ECharts library (CDN, no SRI so the hash cannot mismatch) -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Sidebar navigation placeholder -->
+    <aside id="sidebar-container" class="sidebar"></aside>
+    
+    <!-- Main content dashboard viewport -->
+    <main class="main-content">
+      
+      <!-- View 1: Upload View -->
+      <div id="upload-view" class="dashboard-scroll flex-col items-center justify-center">
+        <div class="card upload-container animate-fade-in stagger-1">
+          <form id="upload-form" style="width: 100%;">
+            <label class="upload-dropzone" id="dropzone">
+              <input type="file" class="file-input" id="file-selector" accept=".pdf" required />
+              <svg class="lucide lucide-upload-cloud" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/>
+                <path d="M12 12v9"/>
+                <path d="m16 16-4-4-4 4"/>
+              </svg>
+              <span class="upload-title" id="dropzone-text">Drag & Drop Financial Statement PDF</span>
+              <span class="upload-subtitle">Accepts native and scanned annual reports (Max 50MB)</span>
+            </label>
+            <div class="form-group">
+              <label class="field-label" for="company-name-input">Company Name</label>
+              <input type="text" class="form-input" id="company-name-input" placeholder="e.g. Apollo Hospitals" required />
+            </div>
+            <div class="form-group">
+              <label class="field-label" for="ticker-input">Ticker Symbol</label>
+              <input type="text" class="form-input" id="ticker-input" placeholder="e.g. APOLLOHOSP" required />
+            </div>
+            <button type="submit" class="btn btn-filled w-full" style="height: 40px; margin-top: var(--space-3);" id="btn-submit">
+              Analyze Financial Document
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- View 2: Processing View -->
+      <div id="processing-view" class="dashboard-scroll flex-col items-center justify-center" style="display: none;">
+        <div class="processing-container animate-fade-in stagger-1">
+          <div class="processing-title-section">
+            <h2 class="processing-header-title">Analyzing Financial Statement</h2>
+            <p class="processing-status-desc" id="processing-sub-text">Please wait while the multi-agent pipeline extracts insight...</p>
+          </div>
+          <div class="processing-grid-card">
+            <!-- Stages List -->
+            <div class="status-list" id="processing-status-list">
+              <!-- Rendered dynamically by js to show stage ticks -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- View 3: Dashboard View -->
+      <div id="dashboard-view" style="display: none; flex-direction: column; flex: 1; overflow: hidden; height: 100%;">
+        <!-- Top header controller context -->
+        <header id="header-container" class="header"></header>
+        
+        <!-- Scrollable metrics grids -->
+        <div class="dashboard-scroll">
+          
+          <!-- Row 1: Health score & metrics sparklines -->
+          <section class="dashboard-row-1">
+            
+            <!-- Overall Decision health card -->
+            <div class="card decision-card animate-fade-in stagger-1" id="health-overall-card">
+              <div class="field-label">Overall Decision</div>
+              <div class="decision-value" id="decision-value-text"></div>
+              <div class="decision-gauge-container">
+                <div class="decision-gauge-chart" id="health-gauge-chart"></div>
+              </div>
+              <div class="decision-health-label">Financial Health Score</div>
+            </div>
+            
+            <!-- Metrics sparkline card slots loaded dynamically by js -->
+            <div id="kpi-container" style="display: contents;"></div>
+            
+          </section>
+
+          <!-- Row 2: Performance trends combo, Radar breakout, Risk progress bars -->
+          <section class="dashboard-row-2">
+            
+            <!-- Revenue trend combo chart -->
+            <div class="card animate-fade-in stagger-2">
+              <div class="chart-container-wrapper">
+                <div class="card-title">
+                  <div class="card-title-left">
+                    Financial Performance Trend <span class="card-subtitle">(₹ in Crores)</span>
+                  </div>
+                </div>
+                <div class="chart-container" id="performance-trend-chart"></div>
+              </div>
+            </div>
+
+            <!-- Financial Health radar breakdown chart -->
+            <div class="card animate-fade-in stagger-3">
+              <div class="chart-container-wrapper">
+                <div class="card-title">Financial Health Breakdown</div>
+                <div class="chart-container" id="health-radar-chart"></div>
+              </div>
+            </div>
+
+            <!-- Labeled risk progress bars panel -->
+            <div class="card risk-panel animate-fade-in stagger-4" id="risk-analysis-panel"></div>
+
+          </section>
+
+          <!-- Row 3: Competitor comparisons, SWOT grid, News headlines -->
+          <section class="dashboard-row-3">
+            
+            <!-- Competitor HTML comparison table -->
+            <div class="card animate-fade-in stagger-5" id="competitor-comparison"></div>
+
+            <!-- SWOT quadrant grid cards -->
+            <div class="card swot-panel animate-fade-in stagger-6" id="swot-analysis-panel"></div>
+
+            <!-- News headlines sentiment feed -->
+            <div class="card news-panel animate-fade-in stagger-7" id="market-news-sentiment"></div>
+
+          </section>
+
+          <!-- Row 4: Action recommendations, Executive summary narrative, Interactive Q&A chat -->
+          <section class="dashboard-row-4">
+            
+            <!-- Investment recommendation card details -->
+            <div class="card recommendation-card animate-fade-in stagger-8" id="investment-recommendation"></div>
+
+            <!-- Executive summary narrative paragraphs -->
+            <div class="card summary-card animate-fade-in stagger-9" id="executive-summary-panel"></div>
+
+            <!-- Ask AI is now a standalone page -->
+
+          </section>
+          
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Bootstrapping main controller script -->
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>

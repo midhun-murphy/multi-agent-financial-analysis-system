@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SWOT Strategic Analysis — Multi-Agent System</title>
+  
+  <!-- Inter Font from Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="./css/variables.css">
+  <link rel="stylesheet" href="./css/main.css">
+  <link rel="stylesheet" href="./css/sidebar.css">
+  <link rel="stylesheet" href="./css/header.css">
+  <link rel="stylesheet" href="./css/cards.css">
+  <link rel="stylesheet" href="./css/table.css">
+  <link rel="stylesheet" href="./css/responsive.css">
+  <link rel="stylesheet" href="./css/swot.css">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Sidebar navigation -->
+    <aside id="sidebar-container" class="sidebar"></aside>
+    
+    <!-- Main content viewport -->
+    <main class="main-content">
+      <div style="display: flex; flex-direction: column; flex: 1; overflow: hidden; height: 100%;">
+        
+        <!-- Header -->
+        <header id="header-container" class="header"></header>
+        
+        <!-- Scrollable content -->
+        <div class="dashboard-scroll" style="padding: 32px;">
+          
+          <div class="card" id="swot-analysis-panel" style="padding: 24px;">
+            <!-- Hydrated by js/swot.js -->
+            <div style="text-align: center; color: var(--text-muted); padding: 48px 0;">
+              Loading SWOT strategic profiles...
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </main>
+    
+  </div>
+
+  <script type="module" src="./js/swot.js"></script>
+</body>
+</html>

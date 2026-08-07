@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Executive Summary Report — Multi-Agent System</title>
+  
+  <!-- Inter Font from Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="./css/variables.css">
+  <link rel="stylesheet" href="./css/main.css">
+  <link rel="stylesheet" href="./css/sidebar.css">
+  <link rel="stylesheet" href="./css/header.css">
+  <link rel="stylesheet" href="./css/cards.css">
+  <link rel="stylesheet" href="./css/table.css">
+  <link rel="stylesheet" href="./css/responsive.css">
+  
+  <style>
+    .summary-report-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+    .col-12 { grid-column: span 12; }
+    .col-8 { grid-column: span 8; }
+    .col-6 { grid-column: span 6; }
+    .col-4 { grid-column: span 4; }
+    .col-3 { grid-column: span 3; }
+    
+    @media (max-width: 992px) {
+      .col-8, .col-6, .col-4, .col-3 { grid-column: span 12; }
+    }
+
+    .report-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .snapshot-item {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 6px;
+      font-size: 13px;
+    }
+
+    .pill-highlight {
+      background: rgba(56, 161, 105, 0.05);
+      border-left: 3px solid var(--accent-green);
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-sm);
+      margin-bottom: var(--space-2);
+      font-size: 12.5px;
+    }
+
+    .pill-risk {
+      background: rgba(229, 62, 62, 0.05);
+      border-left: 3px solid var(--accent-red);
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-sm);
+      margin-bottom: var(--space-2);
+      font-size: 12.5px;
+    }
+
+    .swot-grid-mini {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .swot-quad-mini {
+      background: var(--bg-card-alt);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      font-size: 12px;
+    }
+
+    .health-pillar-mini {
+      background: var(--bg-card-alt);
+      border: 1px solid var(--border-color);
+      padding: 10px;
+      border-radius: var(--radius-sm);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Sidebar navigation -->
+    <aside id="sidebar-container" class="sidebar"></aside>
+    
+    <!-- Main content viewport -->
+    <main class="main-content">
+      <div style="display: flex; flex-direction: column; flex: 1; overflow: hidden; height: 100%;">
+        
+        <!-- Header -->
+        <header id="header-container" class="header"></header>
+        
+        <!-- Scrollable content -->
+        <div class="dashboard-scroll" style="padding: 32px;">
+          
+          <div class="summary-report-grid">
+            
+            <!-- Section 1: Executive Summary Header Metadata -->
+            <div class="report-card col-12" style="background: var(--bg-card-alt); display: flex; flex-direction: row; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+              <div>
+                <span id="report-company-name" style="font-size: 22px; font-weight: 700; color: var(--text-primary);">Target Company</span>
+                <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;" id="report-company-meta-row">
+                  TICKER | EXCHANGE | Sector: Technology | Industry: Software
+                </div>
+              </div>
+              <div style="display: flex; gap: 16px; font-size: 12px; color: var(--text-muted);">
+                <div>Report Date: <b id="report-date-val" style="color: var(--text-primary);">--</b></div>
+                <div>Confidence: <b id="report-confidence-val" style="color: var(--accent-green);">--%</b></div>
+                <div>Sources: <b style="color: var(--accent-blue);">PDF, API, Calculated</b></div>
+              </div>
+            </div>
+
+            <!-- Section 2: Executive Investment Verdict -->
+            <div class="report-card col-8" style="min-height: 220px; justify-content: space-between; background: linear-gradient(135deg, var(--bg-card-alt) 0%, var(--bg-hover) 100%);">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                  <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase;">INVESTMENT VERDICT</span>
+                  <div style="display: flex; align-items: baseline; gap: 12px; margin-top: 8px;">
+                    <span id="verdict-decision" class="badge" style="font-size: 28px; font-weight: 800; padding: 4px 16px;">HOLD</span>
+                    <span id="verdict-score" style="font-size: 20px; font-weight: 700; color: var(--text-primary);">--/100 Overall Score</span>
+                  </div>
+                </div>
+                <div style="text-align: right; font-size: 12px; color: var(--text-muted);">
+                  <div>Health: <span id="verdict-health-score" style="color: var(--text-primary); font-weight: 600;">--/100</span></div>
+                  <div>Risk Score: <span id="verdict-risk-score" style="color: var(--text-primary); font-weight: 600;">--/100</span></div>
+                </div>
+              </div>
+              
+              <div style="font-size: 13.5px; font-weight: 500; border-top: 1px solid var(--border-color); padding-top: 16px; color: var(--text-secondary); line-height: 1.4;" id="verdict-one-liner">
+                Aggregation verdict calculation complete. Suitable for long-term target asset allocation.
+              </div>
+            </div>
+
+            <!-- Section 3: Company Snapshot -->
+            <div class="report-card col-4">
+              <div class="card-title" style="margin-bottom: 4px;">Company Snapshot</div>
+              <div style="display: flex; flex-direction: column; gap: 8px;" id="snapshot-container">
+                <!-- Dynamic values -->
+              </div>
+            </div>
+
+            <!-- Section 4: Financial Highlights -->
+            <div class="report-card col-6">
+              <div class="card-title">Financial Highlights (Top 5 Strengths)</div>
+              <div id="highlights-container">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+
+            <!-- Section 5: Key Risks -->
+            <div class="report-card col-6">
+              <div class="card-title">Key Operational & Solvency Risks</div>
+              <div id="risks-container">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+
+            <!-- Section 6: Competitive Position -->
+            <div class="report-card col-6">
+              <div class="card-title">Competitive Industry Standing</div>
+              <div style="font-size: 12.5px; color: var(--text-secondary); line-height: 1.5; display: flex; flex-direction: column; gap: 10px;" id="competitor-summary-container">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+
+            <!-- Section 7: SWOT Snapshot -->
+            <div class="report-card col-6">
+              <div class="card-title">SWOT Matrix Snapshot</div>
+              <div class="swot-grid-mini" id="swot-mini-container">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+
+            <!-- Section 8: Market Outlook -->
+            <div class="report-card col-6">
+              <div class="card-title">Market Outlook & News Insights</div>
+              <div style="font-size: 12.5px; color: var(--text-secondary); line-height: 1.5; display: flex; flex-direction: column; gap: 8px;" id="outlook-news-container">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+
+            <!-- Section 9: Financial Health Snapshot -->
+            <div class="report-card col-6">
+              <div class="card-title" style="margin-bottom: 8px;">Financial Health Breakdown</div>
+              <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;" id="health-breakdown-container">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+
+            <!-- Section 10: Risk Snapshot -->
+            <div class="report-card col-6">
+              <div class="card-title" style="margin-bottom: 4px;">Solvency & Credit Risk Indices</div>
+              <div style="font-size: 12.5px; color: var(--text-secondary); display: flex; flex-direction: column; gap: 8px;" id="risk-indices-container">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+
+            <!-- Section 11: Investment Recommendation Summary -->
+            <div class="report-card col-6">
+              <div class="card-title" style="margin-bottom: 4px;">Allocation Recommendation Summary</div>
+              <div style="font-size: 12.5px; color: var(--text-secondary); display: flex; flex-direction: column; gap: 8px;" id="recommendation-summary-container">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+
+            <!-- Section 12: AI Executive Conclusion -->
+            <div class="report-card col-12" style="border-top: 2px solid var(--accent-blue); background: rgba(59, 130, 246, 0.02);">
+              <div class="card-title" style="color: var(--accent-blue); display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                <svg class="lucide lucide-file-text" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+                AI Institutional Conclusion
+              </div>
+              <p id="ai-conclusion-paragraph" class="body-text" style="font-size: 13.5px; line-height: 1.6; color: var(--text-primary); text-align: justify; margin: 0;"></p>
+            </div>
+
+          </div>
+          
+        </div>
+      </div>
+    </main>
+    
+  </div>
+
+  <script type="module" src="./js/summary.js"></script>
+</body>
+</html>

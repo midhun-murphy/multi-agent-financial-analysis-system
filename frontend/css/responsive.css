@@ -1,0 +1,153 @@
+/* =============================================================================
+   responsive.css — screen size adaptions and grid shifts
+   ============================================================================= */
+
+/* --- 1600px - Large Displays --- */
+@media (max-width: 1600px) {
+  :root {
+    --card-padding: 14px;
+    --card-gap: 10px;
+  }
+}
+
+/* --- 1440px - Standard Desktop --- */
+@media (max-width: 1440px) {
+  .dashboard-row-1 {
+    grid-template-columns: 200px repeat(6, 1fr);
+  }
+  .kpi-value {
+    font-size: var(--font-size-lg);
+  }
+  .decision-value {
+    font-size: var(--font-size-xl);
+  }
+}
+
+/* --- 1366px - Small Laptop --- */
+@media (max-width: 1366px) {
+  :root {
+    --sidebar-width: 180px;
+  }
+  .dashboard-row-1 {
+    grid-template-columns: 180px repeat(3, 1fr);
+    grid-template-rows: auto auto;
+  }
+  .kpi-card {
+    min-height: 90px;
+  }
+  .kpi-sparkline-container {
+    width: 60px;
+    height: 25px;
+  }
+}
+
+/* --- 1280px - Tablet / Small Desktop Layout Shift --- */
+@media (max-width: 1280px) {
+  .dashboard-row-2 {
+    grid-template-columns: 1.2fr 1fr;
+  }
+  /* Push Risk panel to third spot, or stack it */
+  .dashboard-row-2 > *:last-child {
+    grid-column: span 2;
+  }
+  .dashboard-row-3 {
+    grid-template-columns: 1fr 1fr;
+  }
+  .dashboard-row-3 > *:last-child {
+    grid-column: span 2;
+  }
+}
+
+/* --- 1024px - Compact Screen (Collapsing Sidebar) --- */
+@media (max-width: 1024px) {
+  :root {
+    --sidebar-width: var(--sidebar-collapsed);
+  }
+  .sidebar-logo-text,
+  .nav-item-label,
+  .nav-badge,
+  .nav-section-label,
+  .sidebar-confidence,
+  .sidebar-footer {
+    display: none !important;
+  }
+  .sidebar-logo {
+    justify-content: center;
+    padding: 12px 0;
+  }
+  .nav-item {
+    justify-content: center;
+    padding: 10px 0;
+    margin: 4px 0;
+    border-left: none;
+    border-radius: 0;
+  }
+  .nav-item.active {
+    background: var(--bg-hover);
+    color: var(--accent-blue);
+    border-right: 3px solid var(--accent-blue);
+  }
+  .dashboard-row-2 {
+    grid-template-columns: 1fr;
+  }
+  .dashboard-row-2 > * {
+    grid-column: span 1 !important;
+  }
+  .dashboard-row-4 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- 768px - Mobile View (Stacking all rows) --- */
+@media (max-width: 768px) {
+  .app-container {
+    flex-direction: column;
+  }
+  .sidebar {
+    width: 100vw;
+    height: 60px;
+    min-height: 60px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 var(--space-3);
+    border-bottom: 1px solid var(--border-subtle);
+    border-right: none;
+  }
+  .sidebar-logo {
+    border-bottom: none;
+    padding: 0;
+  }
+  .sidebar-logo-text {
+    display: flex !important;
+  }
+  .sidebar-nav, .sidebar-confidence, .sidebar-footer {
+    display: none !important;
+  }
+  .dashboard-scroll {
+    padding: var(--space-3);
+    gap: var(--space-3);
+  }
+  .dashboard-row-1 {
+    grid-template-columns: 1fr;
+  }
+  .dashboard-row-2, .dashboard-row-3, .dashboard-row-4 {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+  .dashboard-row-2 > *, .dashboard-row-3 > *, .dashboard-row-4 > * {
+    grid-column: span 1 !important;
+  }
+  .header-row-1 {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+  .header-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .header-row-2 {
+    justify-content: flex-start;
+  }
+}

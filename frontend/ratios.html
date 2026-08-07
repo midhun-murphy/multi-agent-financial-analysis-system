@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Investor Ratios Explorer — Multi-Agent System</title>
+  
+  <!-- Inter Font from Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="./css/variables.css">
+  <link rel="stylesheet" href="./css/main.css">
+  <link rel="stylesheet" href="./css/sidebar.css">
+  <link rel="stylesheet" href="./css/header.css">
+  <link rel="stylesheet" href="./css/cards.css">
+  <link rel="stylesheet" href="./css/charts.css">
+  <link rel="stylesheet" href="./css/table.css">
+  <link rel="stylesheet" href="./css/responsive.css">
+  
+  <style>
+    /* Compact Enterprise Layout */
+    .category-card {
+      margin-bottom: var(--space-3);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      overflow: visible !important;
+      height: auto !important;
+      max-height: none !important;
+      padding: 0 !important;
+      background: var(--bg-card);
+      transition: box-shadow var(--transition-fast);
+    }
+    .category-card:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .category-header {
+      padding: var(--space-3) var(--space-4);
+      background: var(--bg-card-alt);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      border-bottom: 1px solid var(--border-color);
+      transition: background-color var(--transition-fast);
+      user-select: none;
+    }
+    .category-header:hover {
+      background: var(--bg-hover);
+    }
+    .chevron-icon {
+      font-size: 12px;
+      color: var(--text-muted);
+      transition: transform 0.2s ease;
+      display: inline-block;
+    }
+    .category-card.collapsed .chevron-icon {
+      transform: rotate(-90deg);
+    }
+    .category-card.collapsed .category-body {
+      display: none !important;
+    }
+    .category-card.collapsed .category-header {
+      border-bottom-color: transparent;
+    }
+    .category-body {
+      padding: var(--space-4) var(--space-5);
+      display: flex !important;
+      flex-direction: column !important;
+      gap: var(--space-3.5) !important;
+      height: auto !important;
+      max-height: none !important;
+      overflow: visible !important;
+    }
+    .category-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0;
+    }
+    .category-subtitle {
+      font-size: 10.5px;
+      color: var(--text-muted);
+      margin-top: 1px;
+      display: block;
+    }
+    .category-header-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    .score-val {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+    
+    /* Compact Table Styles */
+    .category-table {
+      margin-top: var(--space-1);
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .category-table th {
+      font-size: 10.5px;
+      padding: var(--space-2) var(--space-3);
+      background: var(--bg-card-alt);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .category-table td {
+      font-size: 11px;
+      padding: var(--space-2) var(--space-3);
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .checklist-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px solid var(--border-color);
+      margin-bottom: var(--space-1.5);
+      font-size: 11.5px;
+    }
+    .checklist-icon {
+      font-size: 12px;
+      line-height: 1;
+      font-weight: bold;
+    }
+    
+    /* Dropdown alignment */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: calc(100% + 4px);
+      background-color: var(--bg-card);
+      min-width: 180px;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      z-index: 100;
+      overflow: hidden;
+    }
+    .dropdown-content button {
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: none;
+      padding: var(--space-2.5) var(--space-4);
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 12px;
+      font-family: inherit;
+      transition: background-color var(--transition-fast), color var(--transition-fast);
+    }
+    .dropdown-content button:hover {
+      background-color: var(--bg-hover);
+      color: var(--text-primary);
+    }
+    .dropdown-content.show {
+      display: block;
+    }
+    
+    /* Slide Over Drawer Details Panel */
+    .drawer-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .drawer-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .drawer-panel {
+      position: fixed;
+      top: 0;
+      right: -460px;
+      width: 450px;
+      height: 100%;
+      background: var(--bg-card);
+      border-left: 1px solid var(--border-color);
+      box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+      z-index: 1001;
+      transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+    }
+    @media (max-width: 480px) {
+      .drawer-panel {
+        width: 100%;
+        right: -100%;
+      }
+    }
+    .drawer-panel.open {
+      right: 0;
+    }
+    .drawer-header {
+      padding: var(--space-4);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-card-alt);
+    }
+    .drawer-close {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: var(--space-1);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+    .drawer-close:hover {
+      color: var(--text-primary);
+      background: var(--bg-hover);
+    }
+    .drawer-body {
+      padding: var(--space-4) var(--space-5);
+      overflow-y: auto;
+      flex: 1;
+    }
+    .drawer-section {
+      margin-bottom: var(--space-3.5);
+    }
+    .drawer-section-title {
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: var(--space-1.5);
+    }
+    .drawer-val-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-2.5);
+      margin-bottom: var(--space-3);
+    }
+    .drawer-val-box {
+      background: var(--bg-card-alt);
+      border: 1px solid var(--border-color);
+      padding: var(--space-2.5);
+      border-radius: var(--radius-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .drawer-investor-box {
+      background: rgba(99, 102, 241, 0.03);
+      border: 1px solid rgba(99, 102, 241, 0.15);
+      padding: var(--space-3);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-size: 11.5px;
+      line-height: 1.5;
+    }
+    
+    @media print {
+      body {
+        background: #fff !important;
+        color: #000 !important;
+      }
+      .sidebar,
+      .header-actions,
+      #export-dropdown-btn,
+      #btn-back-dashboard,
+      .dropdown,
+      .drawer-overlay,
+      .drawer-panel {
+        display: none !important;
+      }
+      .main-content {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+      }
+      .category-card {
+        border: 1px solid #ccc !important;
+        margin-bottom: var(--space-4) !important;
+        page-break-inside: avoid !important;
+        background: #fff !important;
+      }
+      .category-body {
+        display: flex !important;
+      }
+      .chevron-icon {
+        display: none !important;
+      }
+      .category-header {
+        background: #f0f0f0 !important;
+        border-bottom: 1px solid #ccc !important;
+        color: #000 !important;
+      }
+      .category-title {
+        color: #000 !important;
+      }
+      .score-val {
+        color: #000 !important;
+      }
+      .category-table th, .category-table td {
+        border-bottom: 1px solid #ccc !important;
+        color: #000 !important;
+      }
+    }
+    .interpretation-item {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-color);
+      padding: var(--space-2) 0;
+      font-size: 11.5px;
+    }
+    .interpretation-item:last-child {
+      border-bottom: none;
+    }
+    .conclusion-card {
+      padding: var(--space-3);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      line-height: 1.45;
+      font-weight: 500;
+    }
+    .action-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-3);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-color);
+      background: rgba(0, 229, 255, 0.02);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .dashboard-scroll {
+      flex: 1 1 auto !important;
+      overflow-y: auto !important;
+      height: auto !important;
+      max-height: none !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: var(--space-3.5) !important;
+      padding-bottom: 40px !important;
+    }
+    .drawer-section {
+      height: auto !important;
+      max-height: none !important;
+      overflow: visible !important;
+      margin-bottom: var(--space-3.5) !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Sidebar navigation -->
+    <aside id="sidebar-container" class="sidebar"></aside>
+    
+    <!-- Main content viewport -->
+    <main class="main-content">
+      <div style="display: flex; flex-direction: column; flex: 1; overflow: hidden; height: 100%;">
+        
+        <!-- Header -->
+        <header id="header-container" class="header">
+          <div class="header-row-1">
+            <div class="header-company-info">
+              <h1 class="header-company-name" id="target-company-name-title">Target Company</h1>
+              <span class="badge badge-hold" id="target-company-decision">HOLD</span>
+            </div>
+            <div class="header-actions" style="display: flex; gap: var(--space-2);">
+              <div class="dropdown">
+                <button class="btn btn-outline" id="export-dropdown-btn" style="display: inline-flex; align-items: center;">
+                  <svg class="lucide lucide-download" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; margin-right: 6px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                  Export Ratios Data
+                </button>
+                <div class="dropdown-content" id="export-dropdown-menu">
+                  <button id="export-json">Export JSON Raw</button>
+                  <button id="export-csv">Export Table CSV</button>
+                  <button id="export-excel">Export Excel Workbook</button>
+                  <button id="export-pdf">Print Analysis PDF</button>
+                </div>
+              </div>
+              
+              <button class="btn btn-filled" id="btn-back-dashboard">
+                <svg class="lucide lucide-arrow-left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px;"><line x1="19" x2="5" y1="12" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                Dashboard
+              </button>
+            </div>
+          </div>
+          <div class="header-company-meta">
+            <span id="target-company-ticker-exchange">TICKER | EXCHANGE</span>
+            <span class="header-meta-separator">|</span>
+            <span>Investor Ratio Explorer</span>
+          </div>
+        </header>
+        
+        <!-- Scrollable content -->
+        <div class="dashboard-scroll" style="padding: var(--space-3);">
+                   <!-- Enterprise Category 1: Profitability -->
+          <div class="card category-card" id="card-profitability">
+            <div class="category-header">
+              <div style="display:flex; align-items:center; gap:var(--space-3.5);">
+                <span class="chevron-icon">▼</span>
+                <div>
+                  <h2 class="category-title">Profitability Analysis</h2>
+                  <span class="category-subtitle">Can this company consistently generate profit?</span>
+                </div>
+              </div>
+              <div class="category-header-meta">
+                <div style="text-align: right;">
+                  <span class="field-label" style="font-size:9px;">Category Score</span>
+                  <div class="score-val" id="score-profitability">Not Available</div>
+                </div>
+                <span class="badge badge-hold" id="badge-profitability">N/A</span>
+                <span class="badge badge-blue" id="src-profitability">📄 PDF</span>
+              </div>
+            </div>
+            <div class="category-body">
+              <!-- 1. Category Overview -->
+              <div class="drawer-section">
+                <span class="drawer-section-title">Category Overview</span>
+                <p class="body-text overview-text" id="overview-profitability" style="font-size: 12px; line-height: 1.4; color: var(--text-secondary); margin: 0;">Loading profitability summaries...</p>
+              </div>
+              <!-- 2. Ratio Table -->
+              <div class="drawer-section">
+                <table class="competitor-table category-table" id="table-profitability">
+                  <thead>
+                    <tr>
+                      <th style="text-align: left;">Ratio</th>
+                      <th style="text-align: left;">Current</th>
+                      <th style="text-align: left;">Industry Average</th>
+                      <th style="text-align: left;">Difference</th>
+                      <th style="text-align: left;">Status</th>
+                      <th style="text-align: left;">Source</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Dynamically populated -->
+                  </tbody>
+                </table>
+              </div>
+              <!-- 3. Investor Interpretation -->
+              <div class="drawer-section">
+                <span class="drawer-section-title">Investor Interpretation</span>
+                <div class="investor-interpretations" id="interpretations-profitability" style="display: flex; flex-direction: column; gap: var(--space-2);">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
+              <!-- 4. AI Conclusion -->
+              <div class="drawer-section">
+                <span class="drawer-section-title">AI Conclusion</span>
+                <div class="conclusion-card" id="conclusion-profitability" style="padding: var(--space-3); border-radius: var(--radius-sm); border: 1px solid var(--border-color); font-size: 11.5px; font-weight: 500;">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
+              <!-- 5. Investor Action -->
+              <div class="drawer-section" style="margin-bottom:0;">
+                <span class="drawer-section-title">Investor Action</span>
+                <div class="action-card" id="action-profitability" style="display: flex; align-items: center; gap: var(--space-2.5); padding: var(--space-3); border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: rgba(0, 229, 255, 0.02); font-size: 12px; font-weight: 600;">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Enterprise Category 2: Liquidity -->
+          <div class="card category-card" id="card-liquidity">
+            <div class="category-header">
+              <div style="display:flex; align-items:center; gap:var(--space-3.5);">
+                <span class="chevron-icon">▼</span>
+                <div>
+                  <h2 class="category-title">Liquidity Analysis</h2>
+                  <span class="category-subtitle">Can it pay short-term obligations?</span>
+                </div>
+              </div>
+              <div class="category-header-meta">
+                <div style="text-align: right;">
+                  <span class="field-label" style="font-size:9px;">Category Score</span>
+                  <div class="score-val" id="score-liquidity">Not Available</div>
+                </div>
+                <span class="badge badge-hold" id="badge-liquidity">N/A</span>
+                <span class="badge badge-blue" id="src-liquidity">📄 PDF</span>
+              </div>
+            </div>
+            <div class="category-body">
+              <!-- 1. Category Overview -->
+              <div class="drawer-section">
+                <span class="drawer-section-title">Category Overview</span>
+                <p class="body-text overview-text" id="overview-liquidity" style="font-size: 12px; line-height: 1.4; color: var(--text-secondary); margin: 0;">Loading liquidity summaries...</p>
+              </div>
+              <!-- 2. Ratio Table -->
+              <div class="drawer-section">
+                <table class="competitor-table category-table" id="table-liquidity">
+                  <thead>
+                    <tr>
+                      <th style="text-align: left;">Ratio</th>
+                      <th style="text-align: left;">Current</th>
+                      <th style="text-align: left;">Industry Average</th>
+                      <th style="text-align: left;">Difference</th>
+                      <th style="text-align: left;">Status</th>
+                      <th style="text-align: left;">Source</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Dynamically populated -->
+                  </tbody>
+                </table>
+              </div>
+              <!-- 3. Investor Interpretation -->
+              <div class="drawer-section">
+                <span class="drawer-section-title">Investor Interpretation</span>
+                <div class="investor-interpretations" id="interpretations-liquidity" style="display: flex; flex-direction: column; gap: var(--space-2);">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
+              <!-- 4. AI Conclusion -->
+              <div class="drawer-section">
+                <span class="drawer-section-title">AI Conclusion</span>
+                <div class="conclusion-card" id="conclusion-liquidity" style="padding: var(--space-3); border-radius: var(--radius-sm); border: 1px solid var(--border-color); font-size: 11.5px; font-weight: 500;">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
+              <!-- 5. Investor Action -->
+              <div class="drawer-section" style="margin-bottom:0;">
+                <span class="drawer-section-title">Investor Action</span>
+                <div class="action-card" id="action-liquidity" style="display: flex; align-items: center; gap: var(--space-2.5); padding: var(--space-3); border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: rgba(0, 229, 255, 0.02); font-size: 12px; font-weight: 600;">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Enterprise Category 3: Efficiency -->
+          <div class="card category-card" id="card-efficiency">
+            <div class="category-header">
+              <div style="display:flex; align-items:center; gap:var(--space-3.5);">
+                <span class="chevron-icon">▼</span>
+                <div>
+                  <h2 class="category-title">Operational Efficiency</h2>
+                  <span class="category-subtitle">Does management use assets efficiently?</span>
+                </div>
+              </div>
+              <div class="category-header-meta">
+                <div style="text-align: right;">
+                  <span class="field-label" style="font-size:9px;">Category Score</span>
+                  <div class="score-val" id="score-efficiency">Not Available</div>
+                </div>
+                <span class="badge badge-hold" id="badge-efficiency">N/A</span>
+                <span class="badge badge-blue" id="src-efficiency">📄 PDF</span>
+              </div>
+            </div>
+            <div class="category-body">
+              <!-- 1. Category Overview -->
+              <div class="drawer-section">
+                <span class="drawer-section-title">Category Overview</span>
+                <p class="body-text overview-text" id="overview-efficiency" style="font-size: 12px; line-height: 1.4; color: var(--text-secondary); margin: 0;">Loading efficiency summaries...</p>
+              </div>
+              <!-- 2. Ratio Table -->
+              <div class="drawer-section">
+                <table class="competitor-table category-table" id="table-efficiency">
+                  <thead>
+                    <tr>
+                      <th style="text-align: left;">Ratio</th>
+                      <th style="text-align: left;">Current</th>
+                      <th style="text-align: left;">Industry Average</th>
+                      <th style="text-align: left;">Difference</th>
+                      <th style="text-align: left;">Status</th>
+                      <th style="text-align: left;">Source</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Dynamically populated -->
+                  </tbody>
+                </table>
+              </div>
+              <!-- 3. Investor Interpretation -->
+              <div class="drawer-section">
+                <span class="drawer-section-title">Investor Interpretation</span>
+                <div class="investor-interpretations" id="interpretations-efficiency" style="display: flex; flex-direction: column; gap: var(--space-2);">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
+              <!-- 4. AI Conclusion -->
+              <div class="drawer-section">
+                <span class="drawer-section-title">AI Conclusion</span>
+                <div class="conclusion-card" id="conclusion-efficiency" style="padding: var(--space-3); border-radius: var(--radius-sm); border: 1px solid var(--border-color); font-size: 11.5px; font-weight: 500;">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
+              <!-- 5. Investor Action -->
+              <div class="drawer-section" style="margin-bottom:0;">
+                <span class="drawer-section-title">Investor Action</span>
+                <div class="action-card" id="action-efficiency" style="display: flex; align-items: center; gap: var(--space-2.5); padding: var(--space-3); border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: rgba(0, 229, 255, 0.02); font-size: 12px; font-weight: 600;">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Enterprise Category 4: Solvency -->
+          <div class="card category-card" id="card-solvency">
+            <div class="category-header">
+              <div style="display:flex; align-items:center; gap:var(--space-3.5);">
+                <span class="chevron-icon">▼</span>
+                <div>
+                  <h2 class="category-title">Solvency Stability</h2>
+                  <span class="category-subtitle">Can the company survive long term?</span>
+                </div>
+              </div>
+              <div class="category-header-meta">
+                <div style="text-align: right;">
+                  <span class="field-label" style="font-size:9px;">Category Score</span>
+                  <div class="score-val" id="score-solvency">Not Available</div>
+                </div>
+                <span class="badge badge-hold" id="badge-solvency">N/A</span>
+                <span class="badge badge-blue" id="src-solvency">📄 PDF</span>
+              </div>
+            </div>
+            <div class="category-body">
+              <!-- 1. Category Overview -->
+              <div class="drawer-section">
+                <span class="drawer-section-title">Category Overview</span>
+                <p class="body-text overview-text" id="overview-solvency" style="font-size: 12px; line-height: 1.4; color: var(--text-secondary); margin: 0;">Loading solvency summaries...</p>
+              </div>
+              <!-- 2. Ratio Table -->
+              <div class="drawer-section">
+                <table class="competitor-table category-table" id="table-solvency">
+                  <thead>
+                    <tr>
+                      <th style="text-align: left;">Ratio</th>
+                      <th style="text-align: left;">Current</th>
+                      <th style="text-align: left;">Industry Average</th>
+                      <th style="text-align: left;">Difference</th>
+                      <th style="text-align: left;">Status</th>
+                      <th style="text-align: left;">Source</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Dynamically populated -->
+                  </tbody>
+                </table>
+              </div>
+              <!-- 3. Investor Interpretation -->
+              <div class="drawer-section">
+                <span class="drawer-section-title">Investor Interpretation</span>
+                <div class="investor-interpretations" id="interpretations-solvency" style="display: flex; flex-direction: column; gap: var(--space-2);">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
+              <!-- 4. AI Conclusion -->
+              <div class="drawer-section">
+                <span class="drawer-section-title">AI Conclusion</span>
+                <div class="conclusion-card" id="conclusion-solvency" style="padding: var(--space-3); border-radius: var(--radius-sm); border: 1px solid var(--border-color); font-size: 11.5px; font-weight: 500;">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
+              <!-- 5. Investor Action -->
+              <div class="drawer-section" style="margin-bottom:0;">
+                <span class="drawer-section-title">Investor Action</span>
+                <div class="action-card" id="action-solvency" style="display: flex; align-items: center; gap: var(--space-2.5); padding: var(--space-3); border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: rgba(0, 229, 255, 0.02); font-size: 12px; font-weight: 600;">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </main>
+    
+  </div>
+
+  <!-- Detail Drawer Panel Overlay -->
+  <div class="drawer-overlay" id="ratios-drawer-overlay"></div>
+  <div class="drawer-panel" id="ratios-drawer-panel">
+    <div class="drawer-header">
+      <div>
+        <h3 style="font-size: var(--font-size-lg); font-weight: var(--font-weight-bold);" id="drawer-ratio-name">Ratio Name</h3>
+        <span class="badge badge-blue" id="drawer-ratio-category" style="margin-top: 4px; display: inline-block;">Liquidity</span>
+      </div>
+      <button class="drawer-close" id="ratios-drawer-close-btn">
+        <svg class="lucide lucide-x" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="drawer-body">
+      <div class="drawer-section">
+        <span class="drawer-section-title">Investor Definition</span>
+        <p class="body-text" id="drawer-ratio-definition" style="color: var(--text-secondary); font-size: 12px;"></p>
+      </div>
+      <div class="drawer-section">
+        <span class="drawer-section-title">Calculation Formula</span>
+        <code id="drawer-ratio-formula" style="font-family: monospace; font-size: 11px; background: var(--bg-card-alt); padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm); border: 1px solid var(--border-color); display: block; color: var(--accent-color);"></code>
+      </div>
+      <div class="drawer-val-grid">
+        <div class="drawer-val-box">
+          <span class="field-label">Current Value</span>
+          <span style="font-size: var(--font-size-lg); font-weight: var(--font-weight-bold);" id="drawer-ratio-current">--</span>
+        </div>
+        <div class="drawer-val-box">
+          <span class="field-label">Previous Value</span>
+          <span style="font-size: var(--font-size-lg); font-weight: var(--font-weight-bold);" id="drawer-ratio-prev">--</span>
+        </div>
+      </div>
+      <div class="drawer-val-grid" style="margin-top: calc(-1 * var(--space-2));">
+        <div class="drawer-val-box">
+          <span class="field-label">Industry Benchmark</span>
+          <span style="font-size: var(--font-size-lg); font-weight: var(--font-weight-bold);" id="drawer-ratio-benchmark">--</span>
+        </div>
+        <div class="drawer-val-box">
+          <span class="field-label">Quality Classification</span>
+          <span style="font-size: var(--font-size-lg); font-weight: var(--font-weight-bold);" id="drawer-ratio-status">--</span>
+        </div>
+      </div>
+      <div class="drawer-section">
+        <span class="drawer-section-title">Why it Matters for Investors</span>
+        <p class="body-text" id="drawer-ratio-meaning" style="color: var(--text-secondary); font-size: 12px;"></p>
+      </div>
+      <div class="drawer-section" style="margin-bottom: 0;">
+        <span class="drawer-section-title">Investor Interpretation & Recommendation</span>
+        <div class="drawer-investor-box" id="drawer-ratio-interpretation">--</div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./js/ratios.js"></script>
+</body>
+</html>

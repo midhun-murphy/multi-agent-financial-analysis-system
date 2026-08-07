@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up - Multi-Agent Financial Analysis System</title>
+  
+  <!-- Inter Font from Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="./css/variables.css">
+  <link rel="stylesheet" href="./css/main.css">
+  <link rel="stylesheet" href="./css/header.css">
+  <link rel="stylesheet" href="./css/cards.css">
+  <link rel="stylesheet" href="./css/upload.css">
+  <link rel="stylesheet" href="./css/animations.css">
+  
+  <style>
+    .auth-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      width: 100vw;
+      background: var(--bg-base);
+      padding: var(--space-4);
+    }
+    
+    .auth-container {
+      max-width: 420px;
+      width: 100%;
+    }
+    
+    .auth-header {
+      text-align: center;
+      margin-bottom: var(--space-6);
+    }
+    
+    .auth-header h1 {
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-bold);
+      color: var(--text-primary);
+      margin-bottom: var(--space-2);
+    }
+    
+    .auth-header p {
+      font-size: var(--font-size-sm);
+      color: var(--text-muted);
+    }
+    
+    .alert {
+      padding: var(--space-3);
+      border-radius: 6px;
+      font-size: var(--font-size-sm);
+      margin-bottom: var(--space-4);
+      display: none;
+    }
+    
+    .alert-error {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: var(--accent-red);
+    }
+    
+    .alert-success {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--accent-green);
+    }
+    
+    .auth-footer {
+      text-align: center;
+      margin-top: var(--space-4);
+      font-size: var(--font-size-sm);
+      color: var(--text-muted);
+    }
+    
+    .auth-footer a {
+      color: var(--accent-blue);
+      text-decoration: none;
+    }
+    
+    .auth-footer a:hover {
+      text-decoration: underline;
+    }
+    
+    .form-input {
+      margin-bottom: var(--space-1);
+    }
+    
+    .validation-hint {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      margin-bottom: var(--space-2);
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-wrapper">
+    <div class="auth-container card animate-fade-in">
+      <div class="auth-header">
+        <h1>Create Account</h1>
+        <p>Access the Financial Statement Analysis System</p>
+      </div>
+      
+      <div id="alert-box" class="alert"></div>
+      
+      <form id="signup-form">
+        <div class="form-group">
+          <label class="field-label" for="signup-name">Full Name</label>
+          <input type="text" class="form-input" id="signup-name" placeholder="John Doe" required autocomplete="name" />
+        </div>
+        
+        <div class="form-group">
+          <label class="field-label" for="signup-email">Email Address</label>
+          <input type="email" class="form-input" id="signup-email" placeholder="john@example.com" required autocomplete="email" />
+        </div>
+        
+        <div class="form-group">
+          <label class="field-label" for="signup-password">Password</label>
+          <input type="password" class="form-input" id="signup-password" placeholder="Min. 8 characters" required autocomplete="new-password" />
+          <div class="validation-hint">Must be at least 8 characters long.</div>
+        </div>
+        
+        <div class="form-group">
+          <label class="field-label" for="signup-confirm-password">Confirm Password</label>
+          <input type="password" class="form-input" id="signup-confirm-password" placeholder="Confirm your password" required autocomplete="new-password" />
+        </div>
+        
+        <button type="submit" class="btn btn-filled w-full" style="height: 40px; margin-top: var(--space-4);" id="btn-submit">
+          Sign Up
+        </button>
+      </form>
+      
+      <div class="auth-footer">
+        Already have an account? <a href="login.html">Log In</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('signup-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById('signup-name').value.trim();
+      const email = document.getElementById('signup-email').value.trim();
+      const password = document.getElementById('signup-password').value;
+      const confirmPassword = document.getElementById('signup-confirm-password').value;
+      
+      const alertBox = document.getElementById('alert-box');
+      const submitBtn = document.getElementById('btn-submit');
+      
+      // Hide active alerts
+      alertBox.style.display = 'none';
+      alertBox.className = 'alert';
+      
+      // Client-Side Validations
+      if (!name) {
+        showError('Name is required.');
+        return;
+      }
+      if (!email) {
+        showError('Email is required.');
+        return;
+      }
+      if (password.length < 8) {
+        showError('Password must be at least 8 characters long.');
+        return;
+      }
+      if (password !== confirmPassword) {
+        showError('Passwords do not match.');
+        return;
+      }
+      
+      try {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Creating Account...';
+        
+        const apiBase = window.location.port === '8080' ? 'http://localhost:8000/api' : '/api';
+        const response = await fetch(`${apiBase}/auth/signup`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ name, email, password })
+        });
+        
+        const data = await response.json();
+        
+        if (response.status === 201) {
+          showSuccess('Account created successfully! Redirecting...');
+          setTimeout(() => {
+            window.location.href = 'login.html';
+          }, 1500);
+        } else {
+          // Display server side errors
+          const errorMsg = data.detail || 'An error occurred during sign up.';
+          showError(errorMsg);
+        }
+      } catch (err) {
+        showError('Unable to connect to the server. Please try again later.');
+        console.error(err);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Sign Up';
+      }
+    });
+    
+    function showError(msg) {
+      const alertBox = document.getElementById('alert-box');
+      alertBox.textContent = msg;
+      alertBox.className = 'alert alert-error';
+      alertBox.style.display = 'block';
+    }
+    
+    function showSuccess(msg) {
+      const alertBox = document.getElementById('alert-box');
+      alertBox.textContent = msg;
+      alertBox.className = 'alert alert-success';
+      alertBox.style.display = 'block';
+    }
+  </script>
+</body>
+</html>

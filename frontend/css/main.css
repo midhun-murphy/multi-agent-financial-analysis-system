@@ -1,0 +1,263 @@
+/* =============================================================================
+   main.css — Base reset, global styles, layout skeleton
+   ============================================================================= */
+
+/* --- Reset & Base --- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  color: var(--text-primary);
+  background-color: var(--bg-base);
+  line-height: var(--line-height-normal);
+  overflow-x: hidden;
+}
+
+/* --- Scrollbar --- */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--bg-base); }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.22); }
+
+/* --- App Container --- */
+.app-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+/* --- Main Content --- */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* --- Dashboard Scroll Area --- */
+.dashboard-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--card-gap);
+}
+
+/* --- Dashboard Row Grids --- */
+.dashboard-row-1 {
+  display: grid;
+  grid-template-columns: 220px repeat(6, 1fr);
+  gap: var(--card-gap);
+  min-height: 140px;
+}
+
+.dashboard-row-2 {
+  display: grid;
+  grid-template-columns: 2fr 1.4fr 1.4fr;
+  gap: var(--card-gap);
+  min-height: 280px;
+}
+
+.dashboard-row-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--card-gap);
+  min-height: 240px;
+}
+
+.dashboard-row-4 {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr 1fr;
+  gap: var(--card-gap);
+  min-height: 200px;
+  padding-bottom: var(--space-4);
+}
+
+/* --- Card Base --- */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--card-radius);
+  padding: var(--card-padding);
+  transition: transform var(--transition-fast),
+              box-shadow var(--transition-fast),
+              border-color var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.card:hover {
+  border-color: var(--border-medium);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-1px);
+}
+
+/* --- Card Header --- */
+.card-title {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.card-title-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.card-subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  font-weight: var(--font-weight-normal);
+}
+
+/* --- Label Style --- */
+.field-label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: var(--space-1);
+}
+
+/* --- Badge / Pill --- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.6;
+}
+
+.badge-buy    { background: rgba(16,185,129,0.18); color: var(--accent-green);  border: 1px solid rgba(16,185,129,0.3);  }
+.badge-hold   { background: rgba(245,158,11,0.18);  color: var(--accent-yellow); border: 1px solid rgba(245,158,11,0.3);  }
+.badge-sell   { background: rgba(239,68,68,0.18);   color: var(--accent-red);    border: 1px solid rgba(239,68,68,0.3);   }
+.badge-blue   { background: rgba(59,130,246,0.15);  color: var(--accent-blue);   border: 1px solid rgba(59,130,246,0.3);  }
+.badge-new    { background: var(--accent-blue);     color: #fff; font-size: 9px; padding: 1px 5px; }
+
+.badge-positive { background: rgba(16,185,129,0.12); color: var(--accent-green); }
+.badge-neutral  { background: rgba(100,116,139,0.18); color: var(--text-secondary); }
+.badge-negative { background: rgba(239,68,68,0.12);  color: var(--accent-red); }
+
+/* --- Change Indicator --- */
+.change-positive {
+  color: var(--accent-green);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+.change-negative {
+  color: var(--accent-red);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+/* --- Link Footer --- */
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--accent-blue);
+  font-size: var(--font-size-sm);
+  text-decoration: none;
+  margin-top: var(--space-3);
+  transition: color var(--transition-fast);
+  cursor: pointer;
+}
+.card-link:hover { color: #60a5fa; text-decoration: underline; }
+
+/* --- Divider --- */
+.divider {
+  height: 1px;
+  background: var(--border-subtle);
+  margin: var(--space-3) 0;
+}
+
+/* --- Utility --- */
+.text-primary   { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-muted     { color: var(--text-muted); }
+.text-green     { color: var(--accent-green); }
+.text-red       { color: var(--accent-red); }
+.text-yellow    { color: var(--accent-yellow); }
+.text-blue      { color: var(--accent-blue); }
+.text-purple    { color: var(--accent-purple); }
+.text-cyan      { color: var(--accent-cyan); }
+
+.font-bold     { font-weight: var(--font-weight-bold); }
+.font-semibold { font-weight: var(--font-weight-semibold); }
+.font-medium   { font-weight: var(--font-weight-medium); }
+
+.flex           { display: flex; }
+.flex-col       { flex-direction: column; }
+.items-center   { align-items: center; }
+.justify-between{ justify-content: space-between; }
+.justify-center { justify-content: center; }
+.gap-1          { gap: 4px; }
+.gap-2          { gap: 8px; }
+.gap-3          { gap: 12px; }
+.w-full         { width: 100%; }
+.h-full         { height: 100%; }
+
+/* --- Loading skeleton --- */
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-hover) 50%, var(--bg-card) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* --- SPA View Layout --- */
+#upload-view,
+#processing-view {
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+}
+
+#dashboard-view {
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#dashboard-view .dashboard-scroll {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.flex-1 { flex: 1; }
+
+
+

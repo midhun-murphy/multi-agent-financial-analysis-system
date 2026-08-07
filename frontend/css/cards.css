@@ -1,0 +1,181 @@
+/* =============================================================================
+   cards.css — styles for overall decision, KPI cards, and text summaries
+   ============================================================================= */
+
+/* --- Overall Decision Card --- */
+.decision-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  justify-content: space-between;
+}
+
+.decision-value {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--accent-yellow);
+  margin-top: var(--space-1);
+}
+
+.decision-gauge-container {
+  width: 100%;
+  height: 110px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.decision-gauge-chart {
+  width: 100%;
+  height: 100%;
+}
+
+.decision-health-label {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: -10px;
+}
+
+/* --- KPI Metric Cards --- */
+.kpi-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 110px;
+  position: relative;
+}
+
+.kpi-title {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.kpi-value-container {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.kpi-value {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+
+.kpi-meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: var(--space-1);
+}
+
+.kpi-change-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.kpi-change-period {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.kpi-sparkline-container {
+  position: absolute;
+  right: var(--card-padding);
+  bottom: var(--card-padding);
+  width: 80px;
+  height: 35px;
+  pointer-events: none;
+}
+
+/* --- Investment Recommendation Card --- */
+.recommendation-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.rec-badge-container {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.rec-stars {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  color: var(--accent-yellow);
+}
+
+.rec-stars svg {
+  width: 14px;
+  height: 14px;
+}
+
+.rec-confidence {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.rec-rationale {
+  font-size: var(--font-size-base);
+  color: var(--text-secondary);
+  line-height: var(--line-height-relaxed);
+}
+
+.rec-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+}
+
+.rec-item {
+  background: var(--bg-card-alt);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: var(--space-2) var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rec-item-val {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+/* --- Executive Summary Card --- */
+.summary-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.summary-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.summary-paragraph {
+  font-size: var(--font-size-base);
+  color: var(--text-secondary);
+  line-height: var(--line-height-relaxed);
+  text-align: justify;
+}
+
+/* --- Risk Level Color Indicators --- */
+.risk-text-low { color: var(--risk-low); }
+.risk-text-moderate { color: var(--risk-moderate); }
+.risk-text-high { color: var(--risk-high); }
+.risk-text-critical { color: var(--risk-critical); }

@@ -1,0 +1,124 @@
+/* =============================================================================
+   swot.css — SWOT Analysis quadrant grid
+   ============================================================================= */
+
+.swot-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.swot-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: var(--space-3);
+  flex: 1;
+}
+
+.swot-quadrant {
+  border-radius: 8px;
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  border: 1px solid transparent;
+}
+
+/* Quadrant Specific Colors */
+.swot-s {
+  background: rgba(16, 185, 129, 0.08);
+  border-color: rgba(16, 185, 129, 0.15);
+}
+.swot-s .swot-header-icon {
+  background: var(--accent-green);
+  color: var(--text-inverse);
+}
+.swot-s .swot-quadrant-title {
+  color: var(--accent-green);
+}
+
+.swot-w {
+  background: rgba(245, 158, 11, 0.08);
+  border-color: rgba(245, 158, 11, 0.15);
+}
+.swot-w .swot-header-icon {
+  background: var(--accent-yellow);
+  color: var(--text-inverse);
+}
+.swot-w .swot-quadrant-title {
+  color: var(--accent-yellow);
+}
+
+.swot-o {
+  background: rgba(59, 130, 246, 0.08);
+  border-color: rgba(59, 130, 246, 0.15);
+}
+.swot-o .swot-header-icon {
+  background: var(--accent-blue);
+  color: white;
+}
+.swot-o .swot-quadrant-title {
+  color: var(--accent-blue);
+}
+
+.swot-t {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.15);
+}
+.swot-t .swot-header-icon {
+  background: var(--accent-red);
+  color: white;
+}
+.swot-t .swot-quadrant-title {
+  color: var(--accent-red);
+}
+
+.swot-quadrant-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.swot-header-icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.swot-quadrant-title {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.swot-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  list-style-type: none;
+  padding-left: 2px;
+}
+
+.swot-list li {
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  position: relative;
+  padding-left: 10px;
+}
+
+.swot-list li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--text-muted);
+}
